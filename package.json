@@ -1,0 +1,30 @@
+{
+  "name": "append-only-live-stream",
+  "version": "0.0.0",
+  "description": "create a live stream from any append only file",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chiefbiiko/append-only-live-stream.git"
+  },
+  "keywords": [
+    "live",
+    "stream",
+    "append-only",
+    "file",
+    "real-time"
+  ],
+  "author": "Noah Anabiik Schwarz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chiefbiiko/append-only-live-stream/issues"
+  },
+  "homepage": "https://github.com/chiefbiiko/append-only-live-stream#readme",
+  "devDependencies": {
+    "debug": "^3.1.0",
+    "tape": "^4.9.0"
+  }
+}
