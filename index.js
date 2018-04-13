@@ -14,9 +14,9 @@ function oncereadable () {
     var more = this.push(chunk)
     if (more) this._read()
   }
-  // else {
-  //   this._read()
-  // }
+  else {
+    this._read()
+  }
 }
 
 function onstat (file, err, stats) {
@@ -26,9 +26,9 @@ function onstat (file, err, stats) {
   if (stats.size > this._bytesTransmitted) {
     open(file, 'r', onopen.bind(this, stats))
   }
-  // else {
-  //   this._read()
-  // }
+  else {
+    this._read()
+  }
 }
 
 function onopen (stats, err, fd) {
@@ -42,6 +42,7 @@ function onopen (stats, err, fd) {
 function onread (err, bytesRead, buf) {
   debug('onread err::', err)
   if (err) return this.emit('error', err)
+  this._bytesTransmitted += buf.length
   var more = this.push(buf)
   if (more) this._read()
 }
