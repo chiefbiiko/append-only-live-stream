@@ -5,7 +5,7 @@ var createLiveStream = require('./index')
 tape.onFinish(
   unlink.bind(null, './trivial.test',
     unlink.bind(null, './medium.test',
-      unlink.bind(null, './slow.test', function () {})))
+      unlink.bind(null, './byte.test', function () {})))
 )
 
 tape('live - trivial', function (t) {
@@ -42,31 +42,28 @@ tape('live - medium', function (t) {
   })
 })
 
-tape('live - slow', function (t) {
-  writeFile('./slow.test', '', function (err) {
+tape('live - byte by byte', function (t) {
+  writeFile('./byte.test', '', function (err) {
     if (err) t.end(err)
-    var appendStream = createWriteStream('./slow.test', { flags: 'a' })
-    var liveStream = createLiveStream('./slow.test')
+    var appendStream = createWriteStream('./byte.test', { flags: 'a' })
+    var liveStream = createLiveStream('./byte.test')
     var crunch = ''
     var expected = 'ACAB'
     var input = expected.split('')
-    var ended = false
     liveStream.on('data', function (chunk) {
       crunch += chunk.toString()
     })
-    var interval = setInterval(function () {
-      var char = input.shift()
-      if (char) appendStream.write(char)
-      if (!char) {
-        setTimeout(function () {
-          t.is(crunch, expected, 'ACAB')
-          if (!ended) {
-            ended = true
-            t.end()
-          }
-          clearInterval(interval)
-        }, 500)
-      }
-    }, 500)
+    appendStream.write(input.shift(), function () { // A
+      appendStream.write(input.shift(), function () { // C
+        appendStream.write(input.shift(), function () { // A
+          appendStream.write(input.shift(), function () { // B
+            setTimeout(function () {
+              t.is(crunch, expected, 'ACAB')
+              t.end()
+            }, 1000)
+          })
+        })
+      })
+    })
   })
 })
