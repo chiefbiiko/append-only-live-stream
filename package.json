@@ -1,6 +1,6 @@
 {
   "name": "append-only-live-stream",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "create a live stream from any append only file",
   "main": "index.js",
   "scripts": {
