@@ -36,6 +36,11 @@ function onwatch (cur, prev) {
   if (cur.size > this._bytespushed) this._read()
 }
 
+function _destroy (file, cb) {
+  unwatchFile(file)
+  cb()
+}
+
 function createLiveStream (file, opts) {
   if (!opts) opts = {}
   var liveStream = new Readable({
@@ -49,10 +54,7 @@ function createLiveStream (file, opts) {
   liveStream._opts = Object.assign({ persistent: false, interval: 419 }, opts)
   liveStream._bytespushed = 0
   liveStream._filesize = 0
-  liveStream._destroy = function _destroy (cb) {
-    unwatchFile(file)
-    cb()
-  }
+  liveStream._destroy = _destroy.bind(null, file)
   chiefstat(file, liveStream._opts, oninitstat.bind(liveStream))
   watchFile(file, liveStream._opts, onwatch.bind(liveStream))
   return liveStream
