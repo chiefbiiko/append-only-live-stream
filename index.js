@@ -1,10 +1,6 @@
 var { Readable } = require('stream')
-var { lstat, open, read, stat, watch } = require('fs')
+var { open, read, stat, watch } = require('fs')
 var debug = require('debug')('append-only-live-stream')
-
-function chiefstat (file, opts, cb) {
-  opts.dereference ? stat(file, cb) : lstat(file, cb)
-}
 
 function onopen (err, fd) {
   debug('onopen err,fd::', err, fd)
@@ -35,7 +31,7 @@ function onstat (pull, err, stats) {
 function onchange (e, filename) {
   debug('onchange e,filename::', e, filename)
   if (e !== 'change') return
-  chiefstat(filename, this._opts, onstat.bind(this, true))
+  stat(filename, onstat.bind(this, true))
 }
 
 function createLiveStream (file, opts) {
@@ -60,7 +56,7 @@ function createLiveStream (file, opts) {
   liveStream._watcher = watch(file, liveStream._opts)
   liveStream._watcher.on('change', onchange.bind(liveStream))
   liveStream._watcher.on('error', liveStream.emit.bind(liveStream, 'error'))
-  chiefstat(file, liveStream._opts, onstat.bind(liveStream, false))
+  stat(file, onstat.bind(liveStream, false))
   return liveStream
 }
 
