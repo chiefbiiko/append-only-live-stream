@@ -1,11 +1,11 @@
-var { createWriteStream, unlink, unlinkSync, writeFile } = require('fs')
+var { createWriteStream, unlink, writeFile } = require('fs')
 var tape = require('tape')
 var createLiveStream = require('./index')
 
 tape.onFinish(
   unlink.bind(null, './trivial.test',
     unlink.bind(null, './medium.test',
-      unlink.bind(null, './byte.test', function () {})))
+      unlink.bind(null, './some.test', function () {})))
 )
 
 tape('live - trivial', function (t) {
@@ -42,11 +42,11 @@ tape('live - medium', function (t) {
   })
 })
 
-tape('live - byte by byte', function (t) {
-  writeFile('./byte.test', '', function (err) {
+tape('live - some', function (t) {
+  writeFile('./some.test', '', function (err) {
     if (err) t.end(err)
-    var appendStream = createWriteStream('./byte.test', { flags: 'a' })
-    var liveStream = createLiveStream('./byte.test')
+    var appendStream = createWriteStream('./some.test', { flags: 'a' })
+    var liveStream = createLiveStream('./some.test')
     var crunch = ''
     var expected = 'ACAB'
     var input = expected.split('')
