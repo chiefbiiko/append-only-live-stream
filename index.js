@@ -22,7 +22,7 @@ function onread (err, bytesread, buf) {
 }
 
 function onstat (pull, err, stats) {
-  debug('onstat err,stats.size::', err, stats.size)
+  debug('onstat err,stats.size::', err, (stats || {}).size)
   if (err) return this.emit('error', err)
   this._filesize = stats.size
   if (pull && stats.size > this._bytespiped) this._read()
