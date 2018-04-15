@@ -22,16 +22,16 @@ function onread (err, bytesread, buf) {
 }
 
 function onstat (pull, err, stats) {
-  debug('onstat err,stats.size::', err, (stats || {}).size)
+  debug('onstat pull,err,stats.size::', pull, err, (stats || {}).size)
   if (err) return this.emit('error', err)
   this._filesize = stats.size
   if (pull && stats.size > this._bytespiped) this._read()
 }
 
-function onchange (e, filename) {
-  debug('onchange e,filename::', e, filename)
+function onchange (file, e, filename) {
+  debug('onchange file,e,filename::', file, e, filename)
   if (e !== 'change') return
-  stat(filename, onstat.bind(this, true))
+  stat(file, onstat.bind(this, true))
 }
 
 function createLiveStream (file, opts) {
@@ -54,7 +54,7 @@ function createLiveStream (file, opts) {
   liveStream._bytespiped = 0
   liveStream._filesize = 0
   liveStream._watcher = watch(file, liveStream._opts)
-  liveStream._watcher.on('change', onchange.bind(liveStream))
+  liveStream._watcher.on('change', onchange.bind(liveStream, file))
   liveStream._watcher.on('error', liveStream.emit.bind(liveStream, 'error'))
   stat(file, onstat.bind(liveStream, false))
   return liveStream

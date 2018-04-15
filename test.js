@@ -5,7 +5,8 @@ var createLiveStream = require('./index')
 tape.onFinish(
   unlink.bind(null, './trivial.test',
     unlink.bind(null, './medium.test',
-      unlink.bind(null, './some.test', function () {})))
+      unlink.bind(null, './some.test',
+        unlink.bind(null, './enc.test', function () {}))))
 )
 
 tape('live - trivial', function (t) {
@@ -65,5 +66,19 @@ tape('live - some', function (t) {
         })
       })
     })
+  })
+})
+
+tape('live - encoding', function (t) {
+  writeFile('enc.test', '', function (err) {
+    if (err) t.end(err)
+    var appendStream = createWriteStream('./enc.test', { flags: 'a' })
+    var liveStream = createLiveStream('./enc.test', { encoding: 'utf8' })
+    liveStream.once('data', function (txt) {
+      t.ok(Object.getPrototypeOf(txt) === String.prototype, 'string')
+      t.is(txt, '419', 'fraud')
+      t.end()
+    })
+    appendStream.end(Buffer.from([ 52, 49, 57 ]))
   })
 })
