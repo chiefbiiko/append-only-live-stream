@@ -3,6 +3,7 @@ var { open, read, stat, watch } = require('fs')
 var debug = require('debug')('append-only-live-stream')
 
 // BUG: something is wrong with stat - sometimes
+// TODO: profile stat calls somehow!
 
 function onopen (err, fd) {
   debug('onopen err,fd::', err, fd)
