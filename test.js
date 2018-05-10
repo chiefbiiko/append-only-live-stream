@@ -61,7 +61,7 @@ tape('live - some', function (t) {
             setTimeout(function () {
               t.is(crunch, expected, 'ACAB')
               t.end()
-            }, 1000)
+            }, 1500)
           })
         })
       })
