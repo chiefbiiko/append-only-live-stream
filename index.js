@@ -3,7 +3,6 @@ var { open, read, stat, watch } = require('fs')
 var debug = require('debug')('append-only-live-stream')
 
 // BUG: something is wrong with stat - sometimes
-// TODO: profile stat calls somehow!
 
 function onopen (err, fd) {
   debug('onopen err,fd::', err, fd)
@@ -40,13 +39,11 @@ function onchange (file, e, filename) {
 function createLiveStream (file, opts) {
   if (!opts) opts = {}
   var liveStream = new Readable({
-    highWaterMark: opts.highWaterMark || 16384,
     encoding: opts.encoding || null,
+    highWaterMark: opts.highWaterMark || 16384,
     read () {
       debug('filesize,bytespiped::', this._filesize, this._bytespiped)
-      if (this._filesize > this._bytespiped) {
-        open(file, 'r', onopen.bind(this))
-      }
+      if (this._filesize > this._bytespiped) open(file, 'r', onopen.bind(this))
     },
     destroy (err, cb) {
       this._watcher.close()
