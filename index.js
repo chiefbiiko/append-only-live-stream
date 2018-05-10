@@ -2,7 +2,7 @@ var { Readable } = require('stream')
 var { open, read, stat, watch } = require('fs')
 var debug = require('debug')('append-only-live-stream')
 
-// BUG: something is wrong with stat - sometimes
+// WARNING: unstable - sometimes something is wrong with stat
 
 function onopen (err, fd) {
   debug('onopen err,fd::', err, fd)
